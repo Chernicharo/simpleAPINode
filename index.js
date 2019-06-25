@@ -44,10 +44,19 @@ server.put("/projects/:id", (req, res) => {
 
 server.delete("/projects/:id", (req, res) => {
   const { id } = req.params;
-  const { title } = req.body;
   const index = pseudodb.findIndex(x => x.id == id);
 
   pseudodb.splice(index, 1);
+
+  res.json(pseudodb);
+});
+
+server.post("/projects/:id/tasks", (req, res) => {
+  const { id } = req.params;
+  const { title } = req.body;
+  const index = pseudodb.findIndex(x => x.id == id);
+
+  pseudodb[index].tasks.push(title);
 
   res.json(pseudodb);
 });
