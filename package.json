@@ -1,0 +1,17 @@
+{
+  "name": "simpleAPINode",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/Chernicharo/simpleAPINode.git",
+  "author": "Roberto Chernicharo <foxtamega@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "dev": "nodemon index.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.1"
+  }
+}
