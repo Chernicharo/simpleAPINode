@@ -12,6 +12,28 @@ const pseudodb = [
     tasks: []
   }
 ];
+let reqCount = 0;
+
+// global middleware, count requests
+server.use((req, res, next) => {
+  reqCount++;
+  console.log(`Request Count: ${reqCount}`);
+
+  next();
+});
+
+// local middleware to check id
+function checkID(req, res, next) {
+  const { id } = req.params;
+  const index = pseudodb.findIndex(x => x.id == id);
+
+  if (index == -1) {
+    return res.status(400).json({ error: "Invalid id" });
+  }
+  req.id = id;
+  req.index = index;
+  return next();
+}
 
 //rotes
 server.get("/projects", (req, res) => {
@@ -28,35 +50,24 @@ server.post("/projects", (req, res) => {
   res.json(pseudodb);
 });
 
-server.put("/projects/:id", (req, res) => {
-  const { id } = req.params;
+server.put("/projects/:id", checkID, (req, res) => {
   const { title } = req.body;
-  const index = pseudodb.findIndex(x => x.id == id);
 
-  if (index == -1) {
-    return res.send("id não encontrado");
-  }
-
-  pseudodb[index].title = title;
+  pseudodb[req.index].title = title;
 
   res.json(pseudodb);
 });
 
-server.delete("/projects/:id", (req, res) => {
-  const { id } = req.params;
-  const index = pseudodb.findIndex(x => x.id == id);
-
-  pseudodb.splice(index, 1);
+server.delete("/projects/:id", checkID, (req, res) => {
+  pseudodb.splice(req.index, 1);
 
   res.json(pseudodb);
 });
 
-server.post("/projects/:id/tasks", (req, res) => {
-  const { id } = req.params;
+server.post("/projects/:id/tasks", checkID, (req, res) => {
   const { title } = req.body;
-  const index = pseudodb.findIndex(x => x.id == id);
 
-  pseudodb[index].tasks.push(title);
+  pseudodb[req.index].tasks.push(title);
 
   res.json(pseudodb);
 });
